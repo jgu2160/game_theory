@@ -24,11 +24,11 @@ class Game
   end
 
   def nash_equilibrium
-    cc = judge_payoff(payoffs[0], payoffs[1], 0)
-    dc = judge_payoff(payoffs[2], payoffs[3], 0)
-    cd = judge_payoff(payoffs[0], payoffs[2], 1)
-    dd = judge_payoff(payoffs[1], payoffs[3], 1)
-    best_choices = [cc, dc, cd, dd]
+    p2c = judge_payoff(payoffs[0], payoffs[1], 0)
+    p2d = judge_payoff(payoffs[2], payoffs[3], 0)
+    p1c = judge_payoff(payoffs[0], payoffs[2], 1)
+    p1d = judge_payoff(payoffs[1], payoffs[3], 1)
+    best_choices = [p2c, p2d, p1c, p1d]
     best_choices.each_with_object(Hash.new(0)) { |payoff, hash| hash[payoff] += 1 }
       .select {|key,value| value == 2 }
       .keys.map { |payoff| ACTIONS_HASH[payoffs.index(payoff).to_s.to_sym] }
