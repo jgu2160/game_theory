@@ -21,8 +21,8 @@ class GameTest < MiniTest::Test
   end
 
   def test_stag_game_has_a_payoff_array
-    prisoner = Game.new(payoffs: stag_payoffs)
-    assert_equal stag_payoffs, prisoner.payoffs
+    stag = Game.new(payoffs: stag_payoffs)
+    assert_equal stag_payoffs, stag.payoffs
   end
 
   def test_it_sets_equal_to_correct_game
