@@ -84,6 +84,10 @@ class Player
     payoff_memory.inject(0) { |sum, po| sum += po }
   end
 
+  def avg
+    payoff/@payoff_memory.length.to_f
+  end
+
   def cooperate
     1
   end
@@ -116,5 +120,11 @@ end
 class Mean < Player
   def move
     defect
+  end
+end
+
+class Nice < Player
+  def move
+    cooperate
   end
 end
