@@ -1,10 +1,9 @@
-require "byebug"
 class Game
   attr_accessor :payoffs, :p1, :p2
-  ACTIONS_HASH = { "0": "Cooperate, Cooperate",
-                   "1": "Defect, Cooperate",
-                   "2": "Cooperate, Defect",
-                   "3": "Defect, Defect"
+  ACTIONS_HASH = { 0 => "Cooperate, Cooperate",
+                   1 => "Defect, Cooperate",
+                   2 => "Cooperate, Defect",
+                   3 => "Defect, Defect"
   }
 
   def initialize(options={})
@@ -32,12 +31,24 @@ class Game
     p1d = judge_payoff(payoffs[1], payoffs[3], 1)
     best_choices = [p2c, p2d, p1c, p1d]
     best_choices.each_with_object(Hash.new(0)) { |payoff, hash| hash[payoff] += 1 }
-      .select {|key,value| value == 2 }
-      .keys.map { |payoff| ACTIONS_HASH[payoffs.index(payoff).to_s.to_sym] }
+      .select {|key, value| value == 2 }
+      .keys.map { |payoff| ACTIONS_HASH[payoffs.index(payoff)] }
   end
 
   def judge_payoff(payoff_1, payoff_2, player)
     payoff_1[player] > payoff_2[player] ? payoff_1 : payoff_2
+  end
+
+  def encode_move_memory(p1_move, p2_move)
+    p1.move_memory_self << p1_move
+    p2.move_memory_self << p2_move
+    p1.move_memory_opponent << p2_move
+    p2.move_memory_opponent << p1_move
+  end
+
+  def encode_payoff_memory(payoff)
+    p1.payoff_memory << payoff[0]
+    p2.payoff_memory << payoff[1]
   end
 
   def turn
@@ -47,27 +58,22 @@ class Game
   end
 
   def play(p1_move, p2_move)
-    p1.move_memory_self << p1_move
-    p2.move_memory_self << p2_move
-    p1.move_memory_opponent << p2_move
-    p2.move_memory_opponent << p1_move
+    encode_move_memory(p1_move, p2_move)
     if p1_move == 1 && p2_move == 1
-      p1.payoff_memory << payoffs[0][0]
-      p2.payoff_memory << payoffs[0][1]
-      return payoffs[0]
+      payoff = payoffs[0]
+      puts "\n" + ACTIONS_HASH[0]
     elsif p1_move == 0 && p2_move == 0
-      p1.payoff_memory << payoffs[3][0]
-      p2.payoff_memory << payoffs[3][1]
-      return payoffs[3]
+      payoff = payoffs[3]
+      puts "\n" + ACTIONS_HASH[3]
     elsif p1_move == 0
-      p1.payoff_memory << payoffs[1][0]
-      p2.payoff_memory << payoffs[1][1]
-      return payoffs[1]
+      payoff = payoffs[1]
+      puts "\n" + ACTIONS_HASH[1]
     else
-      p1.payoff_memory << payoffs[2][0]
-      p2.payoff_memory << payoffs[2][1]
-      return payoffs[2]
+      payoff = payoffs[2]
+      puts "\n" + ACTIONS_HASH[2]
     end
+    encode_payoff_memory(payoff)
+    payoff
   end
 end
 
@@ -126,5 +132,15 @@ end
 class Nice < Player
   def move
     cooperate
+  end
+end
+
+class Rando < Player
+  def move
+    if rand < 0.5
+      cooperate
+    else
+      defect
+    end
   end
 end
