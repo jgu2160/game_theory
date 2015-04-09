@@ -52,9 +52,7 @@ class Game
   end
 
   def turn
-    p1_move = p1.move
-    p2_move = p2.move
-    play(p1_move, p2_move)
+    play(p1.move, p2.move)
   end
 
   def play(p1_move, p2_move)
